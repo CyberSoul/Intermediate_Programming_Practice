@@ -1,11 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Events;
-
-[System.Serializable]
-public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState> { }
 
 public class GameManager : SingletonTemplate<GameManager>
 {
@@ -17,7 +12,7 @@ public class GameManager : SingletonTemplate<GameManager>
     }
 
     [SerializeField] GameObject[] c_systemPrefabs;
-    [SerializeField] public EventGameState OnGameStateChanged;
+    [SerializeField] public Events.EventGameState OnGameStateChanged;
 
     private string m_currentLevelName = string.Empty;
 
@@ -39,6 +34,8 @@ public class GameManager : SingletonTemplate<GameManager>
         m_loadOperations = new List<AsyncOperation>();
 
         InstantiateSystemPrefabs();
+
+        UIManager.Instance.OnMainMenuFadeComplete.AddListener(HandleNainMenuFadeComplete);
     }
 
     private void Update()
@@ -85,6 +82,14 @@ public class GameManager : SingletonTemplate<GameManager>
     {
         Debug.Log("Unload complete");
     }
+    
+    void HandleNainMenuFadeComplete(bool a_fadeOut)
+    {
+        if (!a_fadeOut)
+        {
+            UnloadLevel(m_currentLevelName);
+        }
+    }
 
     void UpdateState(GameState a_newState)
     {
@@ -94,6 +99,7 @@ public class GameManager : SingletonTemplate<GameManager>
         switch (m_currentGameState)
         {
             case GameState.PREGAME:
+                Time.timeScale = 1;
                 break;
 
             case GameState.RUNNING:
@@ -151,5 +157,17 @@ public class GameManager : SingletonTemplate<GameManager>
     {
         UpdateState(m_currentGameState == GameState.PAUSED ? GameState.RUNNING : GameState.PAUSED);
 
+    }
+
+    public void RestartGame()
+    {
+        UpdateState(GameState.PREGAME);
+    }
+
+    public void QuitGame()
+    {
+        //Do something before close. Like save.
+
+        Application.Quit();
     }
 }
