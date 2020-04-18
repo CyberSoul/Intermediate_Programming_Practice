@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonTemplate<GameManager>
 {
-    // What level the game is currently loaded
-    //Load and unload game level
+
     //keep track of game state
     //generate other persistent systems
     private string m_currentLevelName = string.Empty;
@@ -18,6 +17,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject); //Do not destroy our manager on some incorrect unload boot scene.
 
         m_loadOperations = new List<AsyncOperation>();
+
         LoadLevel("Main");
     }
 
