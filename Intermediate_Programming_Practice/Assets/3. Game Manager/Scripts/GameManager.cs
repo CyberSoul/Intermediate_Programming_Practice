@@ -41,6 +41,19 @@ public class GameManager : SingletonTemplate<GameManager>
         InstantiateSystemPrefabs();
     }
 
+    private void Update()
+    {
+        if (Instance.CurrentGameState == GameState.PREGAME)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -84,9 +97,11 @@ public class GameManager : SingletonTemplate<GameManager>
                 break;
 
             case GameState.RUNNING:
+                Time.timeScale = 1;
                 break;
 
             case GameState.PAUSED:
+                Time.timeScale = 0;
                 break;
 
             default:
@@ -130,5 +145,11 @@ public class GameManager : SingletonTemplate<GameManager>
     public void StartGame()
     {
         LoadLevel("Main");
+    }
+
+    public void TogglePause()
+    {
+        UpdateState(m_currentGameState == GameState.PAUSED ? GameState.RUNNING : GameState.PAUSED);
+
     }
 }
