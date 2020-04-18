@@ -5,20 +5,34 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonTemplate<GameManager>
 {
-
     //keep track of game state
-    //generate other persistent systems
     private string m_currentLevelName = string.Empty;
+    [SerializeField] GameObject[] c_systemPrefabs;
 
+    List<GameObject> m_instanceSystemPrefabs;
     List<AsyncOperation> m_loadOperations;
 
     public void Start()
     {
         DontDestroyOnLoad(gameObject); //Do not destroy our manager on some incorrect unload boot scene.
 
+        m_instanceSystemPrefabs = new List<GameObject>();
         m_loadOperations = new List<AsyncOperation>();
 
+        InstantiateSystemPrefabs();
+
         LoadLevel("Main");
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        foreach (var obj in m_instanceSystemPrefabs)
+        {
+            Destroy(obj);
+        }
+        m_instanceSystemPrefabs.Clear();
     }
 
     //Load and unload game level
@@ -38,6 +52,17 @@ public class GameManager : SingletonTemplate<GameManager>
     void OnUnloadOperationComplete(AsyncOperation a_operation)
     {
         Debug.Log("Unload complete");
+    }
+
+    private void InstantiateSystemPrefabs()
+    {
+        GameObject prefabInstance;
+        foreach (var prefab in c_systemPrefabs)
+        {
+            prefabInstance = Instantiate(prefab);
+
+            m_instanceSystemPrefabs.Add(prefabInstance);
+        }
     }
 
     public void LoadLevel(string a_levelname)
