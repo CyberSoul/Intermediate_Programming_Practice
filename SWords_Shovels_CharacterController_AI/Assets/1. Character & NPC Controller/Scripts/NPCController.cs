@@ -25,7 +25,7 @@ public class NPCController : MonoBehaviour
         InvokeRepeating("Tick", 0, 0.5f); //Timer for TRigger Tick method every 0.5 seconds.
         if (waypoints.Length > 0)
         {
-            InvokeRepeating("Patrol", 0, patrolTime);
+            InvokeRepeating("Patrol", Random.Range(0, patrolTime), patrolTime);
         }
     }
 
@@ -55,5 +55,12 @@ public class NPCController : MonoBehaviour
             agent.speed = agentSpeed / 2; // for patrol use just half speed
 
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Draw agro sphere in editor for better view.
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, aggroRange);
     }
 }
