@@ -29,6 +29,11 @@ public class NPCController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+    }
+
     void Patrol()
     {
         index = index == waypoints.Length - 1 ? 0 : index + 1;
@@ -36,6 +41,19 @@ public class NPCController : MonoBehaviour
 
     void Tick()
     {
-        agent.destination = waypoints[index].position;
+
+        if (player != null && Vector3.Distance(transform.position, player.position) < aggroRange)
+        {
+            Debug.Log("Pursuit");
+            agent.destination = player.position;
+            agent.speed = agentSpeed;
+        }
+        else
+        {
+            Debug.Log("Patrol");
+            agent.destination = waypoints[index].position;
+            agent.speed = agentSpeed / 2; // for patrol use just half speed
+
+        }
     }
 }
