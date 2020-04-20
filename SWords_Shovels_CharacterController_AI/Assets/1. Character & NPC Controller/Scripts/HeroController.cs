@@ -12,5 +12,8 @@ public class HeroController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
-
+    private void Update()
+    {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+    }
 }
