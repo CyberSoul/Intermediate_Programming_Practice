@@ -12,7 +12,7 @@ public class ItemPickUps_SO : ScriptableObject
     public ItemTypeDefinitions itemType = ItemTypeDefinitions.HEALTH;
     public ItemArmorSubType itemArmorSubType = ItemArmorSubType.None;
     public int itemAmount = 0;
-    public int spawnChance = 0;
+    public int spawnChanceWeight = 0;
 
     public Material itemMaterial = null;
     public Sprite itemIcon = null;
