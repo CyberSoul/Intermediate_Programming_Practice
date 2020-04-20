@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class MouseManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class MouseManager : MonoBehaviour
     public Texture2D pointer; // normal mouse pointer
     public Texture2D target; // target mouse pointer
     public Texture2D doorway; // doorway mouse pointer
+
+    public EventVector3 m_OnClickEnvironment;
 
     void Update()
     {
@@ -26,7 +29,10 @@ public class MouseManager : MonoBehaviour
                 Cursor.SetCursor(target, new Vector2(16, 16), CursorMode.Auto);
             }
 
-
+            if (Input.GetMouseButtonDown(0))
+            {
+                m_OnClickEnvironment.Invoke(hit.point);
+            }
         }
         else
         {
@@ -35,3 +41,5 @@ public class MouseManager : MonoBehaviour
     }
 }
 
+[System.Serializable]
+public class EventVector3 : UnityEvent<Vector3> { }
