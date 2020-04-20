@@ -8,10 +8,25 @@ public enum ItemArmorSubType { None, Head, Chest, Hands, Legs, Boots };
 [CreateAssetMenu(fileName = "NewItem", menuName = "Spawnable Item/New Pick-up", order = 1)]
 public class ItemPickUps_SO : ScriptableObject
 {
+    public string itemName = "New item";
     public ItemTypeDefinitions itemType = ItemTypeDefinitions.HEALTH;
     public ItemArmorSubType itemArmorSubType = ItemArmorSubType.None;
     public int itemAmount = 0;
+    public int spawnChance = 0;
 
+    public Material itemMaterial = null;
+    public Sprite itemIcon = null;
     public Rigidbody itemSpawnObject = null;
     public Rigidbody weaponSlotObject = null;
+
+    public bool isEquipped = false;
+    public bool isEnteractable = false;
+    public bool isStorable = false;
+    public bool isUnique = false;
+    public bool isIndestructable = false;
+    public bool isQuestItem = false;
+    public bool isStackable = false;
+    public bool isDestroyOnUse = false;
+    public float itemWeight = 0f;
+    
 }
