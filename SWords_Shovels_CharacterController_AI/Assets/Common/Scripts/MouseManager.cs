@@ -31,7 +31,15 @@ public class MouseManager : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                m_OnClickEnvironment.Invoke(hit.point);
+                if (door)
+                {
+                    Transform doorway = hit.collider.gameObject.transform;
+                    m_OnClickEnvironment.Invoke(doorway.position + doorway.forward * 10);
+                }
+                else
+                {
+                    m_OnClickEnvironment.Invoke(hit.point);
+                }
             }
         }
         else
