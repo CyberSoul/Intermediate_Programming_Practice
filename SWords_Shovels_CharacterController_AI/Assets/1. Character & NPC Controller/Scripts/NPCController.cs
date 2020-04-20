@@ -21,7 +21,21 @@ public class NPCController : MonoBehaviour
         if (agent != null) { agentSpeed = agent.speed; }
         player = GameObject.FindGameObjectWithTag("Player").transform;
         index = Random.Range(0, waypoints.Length);
+
+        InvokeRepeating("Tick", 0, 0.5f); //Timer for TRigger Tick method every 0.5 seconds.
+        if (waypoints.Length > 0)
+        {
+            InvokeRepeating("Patrol", 0, patrolTime);
+        }
     }
 
+    void Patrol()
+    {
+        index = index == waypoints.Length - 1 ? 0 : index + 1;
+    }
 
+    void Tick()
+    {
+        agent.destination = waypoints[index].position;
+    }
 }
