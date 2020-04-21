@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+public delegate void EnemyDeestroyHandler(int pointValue);
+
 public class EnemyController : MonoBehaviour
 {
     #region Field Declarations
@@ -24,6 +26,8 @@ public class EnemyController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     #endregion
+
+    public event EnemyDeestroyHandler enemyDestroyed;
 
     #region Startup
 
@@ -66,11 +70,16 @@ public class EnemyController : MonoBehaviour
     {
         Destroy(collision.gameObject);
 
-        FindObjectOfType<PlayerController>().EnableProjectile();
-        FindObjectOfType<HUDController>().UpdateScore(pointValue);
+        /*FindObjectOfType<PlayerController>().EnableProjectile();
+        FindObjectOfType<HUDController>().UpdateScore(pointValue);*/ 
         
         GameObject xPlosion = Instantiate(explosion, transform.position, Quaternion.identity);
         xPlosion.transform.localScale = new Vector2(2, 2);
+
+        if (enemyDestroyed != null)
+        {
+            enemyDestroyed.Invoke(pointValue);
+        }
 
         Destroy(gameObject);
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,8 +16,12 @@ public class PlayerController : MonoBehaviour
 
     private bool projectileEnabled = true;
     private WaitForSeconds shieldTimeOut;
-    
+
     #endregion
+
+    public GameSceneController m_gameSceneController;
+
+    public event Action HitByEnemy;
 
     #region Startup
 
@@ -24,6 +29,14 @@ public class PlayerController : MonoBehaviour
     {
         shieldTimeOut = new WaitForSeconds(shieldDuration);
         EnableShield();
+
+        m_gameSceneController = FindObjectOfType<GameSceneController>();
+        m_gameSceneController.ScoreUpdatedOnKill += RechargeOnKillEnemy;
+    }
+
+    private void RechargeOnKillEnemy(int pointValue)
+    {
+        EnableProjectile();
     }
 
     #endregion
@@ -88,6 +101,7 @@ public class PlayerController : MonoBehaviour
         projectile.isPlayers = true;
         projectile.projectileSpeed = 4;
         projectile.projectileDirection = Vector2.up;
+
         projectile.ProjectileOutOfBounds += EnableProjectile;
 
         DisableProjectile();
@@ -109,6 +123,11 @@ public class PlayerController : MonoBehaviour
         xp.transform.localScale = new Vector2(2, 2);
 
         Destroy(gameObject);
+
+        if (HitByEnemy != null)
+        {
+            HitByEnemy.Invoke();
+        }
     }
 
     #endregion

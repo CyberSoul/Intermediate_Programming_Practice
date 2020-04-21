@@ -18,11 +18,25 @@ public class HUDController : MonoBehaviour
 
     #endregion
 
+    public GameSceneController m_gameSceneController;
+
     #region Startup
 
     private void Awake()
     {
         statusText.gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        m_gameSceneController = FindObjectOfType<GameSceneController>();
+        m_gameSceneController.ScoreUpdatedOnKill += ScoreUpdatedOnKillCallback;
+        m_gameSceneController.LifeLost += HideShip;
+    }
+
+    private void ScoreUpdatedOnKillCallback(int totalScore)
+    {
+        UpdateScore(totalScore);
     }
 
     #endregion
