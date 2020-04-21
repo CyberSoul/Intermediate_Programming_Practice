@@ -37,10 +37,13 @@ public class PowerupController :MonoBehaviour
         if (powerType == PowerType.Shield)
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            player.EnableShield();
+            if (player)
+            {
+                player.EnableShield();
+            }
         }
-        
-       Destroy(gameObject);
+
+        Destroy(gameObject);
     }
 
     #endregion
