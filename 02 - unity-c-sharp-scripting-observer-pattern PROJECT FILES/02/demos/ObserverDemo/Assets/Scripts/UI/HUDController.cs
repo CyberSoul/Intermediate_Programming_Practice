@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class HUDController : MonoBehaviour
+public class HUDController : MonoBehaviour, IEndGameObserver
 {
 	#region Field Declarations
 
@@ -30,6 +30,9 @@ public class HUDController : MonoBehaviour
     private void Start()
     {
         m_gameSceneController = FindObjectOfType<GameSceneController>();
+
+        m_gameSceneController.AddObserver(this);
+
         m_gameSceneController.ScoreUpdatedOnKill += ScoreUpdatedOnKillCallback;
         m_gameSceneController.LifeLost += HideShip;
     }
@@ -63,6 +66,11 @@ public class HUDController : MonoBehaviour
     {
         foreach (Image ship in shipImages)
             ship.gameObject.SetActive(true);
+    }
+
+    public void Notify()
+    {
+        ShowStatus("Game Over");
     }
 
     #endregion

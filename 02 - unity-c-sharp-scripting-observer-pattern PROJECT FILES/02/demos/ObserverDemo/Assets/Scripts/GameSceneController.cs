@@ -9,6 +9,28 @@ public class GameSceneController : MonoBehaviour
 
     public event Action<int> LifeLost;
 
+    #region Subject Implementation
+    private List<IEndGameObserver> m_endGameObservers;
+
+    public void AddObserver(IEndGameObserver a_obsserver)
+    {
+        m_endGameObservers.Add(a_obsserver);
+    }
+
+    public void RemoveObserver(IEndGameObserver a_observer)
+    {
+        m_endGameObservers.Remove(a_observer);
+    }
+
+    public void NotifyObservers()
+    {
+        foreach ( IEndGameObserver observer in m_endGameObservers )
+        {
+            observer.Notify();
+        }
+    }
+    #endregion
+
     #region Field Declarations
 
     [Header("Enemy & Power Prefabs")]
@@ -37,6 +59,11 @@ public class GameSceneController : MonoBehaviour
     #endregion
 
     #region Startup
+
+    private void Awake()
+    {
+        m_endGameObservers = new List<IEndGameObserver>();
+    }
 
     void Start()
     {
@@ -101,6 +128,11 @@ public class GameSceneController : MonoBehaviour
         {
             StartCoroutine(SpawnShip(true));
         }
+        else
+        {
+            StopAllCoroutines();
+            NotifyObservers();
+        }
     }
 
     private IEnumerator SpawnEnemies()
@@ -120,6 +152,7 @@ public class GameSceneController : MonoBehaviour
             enemy.angerdelayTime = currentLevel.enemyAngerDelay;
 
             enemy.enemyDestroyed += EnemyDestroyed;
+            AddObserver(enemy);
 
             yield return wait;
         }
@@ -140,7 +173,8 @@ public class GameSceneController : MonoBehaviour
         {
             int index = UnityEngine.Random.Range(0, powerUpPrefabs.Length);
             Vector2 spawnPosition = ScreenBounds.RandomTopPosition();
-            Instantiate(powerUpPrefabs[index], spawnPosition, Quaternion.identity);
+            var powerUp = Instantiate(powerUpPrefabs[index], spawnPosition, Quaternion.identity);
+            AddObserver(powerUp);
             yield return new WaitForSeconds(UnityEngine.Random.Range(currentLevel.powerUpMinimumWait,currentLevel.powerUpMaximumWait));
         }
     }

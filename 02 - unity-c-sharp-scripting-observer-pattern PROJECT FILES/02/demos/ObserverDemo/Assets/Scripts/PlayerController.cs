@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     //Set by GameSceneController
     [HideInInspector] public float shieldDuration;
     [HideInInspector] public float speed;
-
+    
     private bool projectileEnabled = true;
     private WaitForSeconds shieldTimeOut;
 
@@ -32,6 +32,13 @@ public class PlayerController : MonoBehaviour
 
         m_gameSceneController = FindObjectOfType<GameSceneController>();
         m_gameSceneController.ScoreUpdatedOnKill += RechargeOnKillEnemy;
+
+        EventBroker.ProjectileOutOfBounds += EnableProjectile;
+    }
+
+    private void OnDisable()
+    {
+        EventBroker.ProjectileOutOfBounds -= EnableProjectile;
     }
 
     private void RechargeOnKillEnemy(int pointValue)
@@ -102,8 +109,6 @@ public class PlayerController : MonoBehaviour
         projectile.projectileSpeed = 4;
         projectile.projectileDirection = Vector2.up;
 
-        projectile.ProjectileOutOfBounds += EnableProjectile;
-
         DisableProjectile();
     }
 
@@ -122,12 +127,14 @@ public class PlayerController : MonoBehaviour
         GameObject xp = Instantiate(expolsion, transform.position, Quaternion.identity);
         xp.transform.localScale = new Vector2(2, 2);
 
-        Destroy(gameObject);
-
         if (HitByEnemy != null)
         {
-            HitByEnemy.Invoke();
+            HitByEnemy();
         }
+
+        m_gameSceneController.ScoreUpdatedOnKill -= RechargeOnKillEnemy;
+
+        Destroy(gameObject);
     }
 
     #endregion
